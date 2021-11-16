@@ -1,19 +1,25 @@
 import GUN, { SEA } from "gun/gun";
 import { FormEventHandler, useEffect, useState } from "react";
 
+import { GUN_LOCAL_RELAY } from "../lib/constants";
 import { user } from "../lib/user";
 import { useAuthStore } from "../modules/auth/useAuthStore";
 import ChatMessage from "./ChatMessage";
 import Login from "./Login";
 
-const db = GUN();
+const db = GUN({
+  peers: [`${GUN_LOCAL_RELAY}/gun`],
+});
+
 const key = "#foo";
+
+type Message = any;
 
 const Chat = () => {
   const { username } = useAuthStore();
 
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     db.get("chat")
