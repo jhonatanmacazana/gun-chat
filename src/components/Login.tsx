@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { user } from "../lib/user";
 
 const Login = () => {
@@ -7,19 +8,19 @@ const Login = () => {
 
   const handleLogin = () => {
     user.auth(username, password, ack => {
-      // @ts-ignore
-      if (ack.err) alert(ack.err);
+      if ("err" in ack && ack.err) {
+        alert(ack.err);
+      }
     });
   };
 
   const handleSignup = () => {
     user.create(username, password, ack => {
-      // @ts-ignore
-      if (ack.err) {
-        // @ts-ignore
+      if ("err" in ack && ack.err) {
         alert(ack.err);
         return;
       }
+
       handleLogin();
     });
   };

@@ -1,19 +1,13 @@
 import GUN, { SEA } from "gun/gun";
 import { FormEventHandler, useEffect, useState } from "react";
 
-import { GUN_LOCAL_RELAY } from "../lib/constants";
+import { SECRET_KEY } from "../lib/constants";
+import { gun } from "../lib/gun";
+import { Message } from "../lib/types";
 import { user } from "../lib/user";
 import { useAuthStore } from "../modules/auth/useAuthStore";
 import ChatMessage from "./ChatMessage";
 import Login from "./Login";
-
-const db = GUN({
-  peers: [`${GUN_LOCAL_RELAY}/gun`],
-});
-
-const key = "#foo";
-
-type Message = any;
 
 const Chat = () => {
   const { username } = useAuthStore();
@@ -22,17 +16,19 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    db.get("chat")
+    gun
+      .get("chat")
       .map()
       .once(async (data, id) => {
         if (data) {
-          const message = {
+          const message: Message = {
             // @ts-ignore
-            who: db.user(data).get("alias"),
-            what: (await SEA.decrypt(data.what, key)) + "",
+            who: await gun.user(data).get("alias"),
+            what: (await SEA.decrypt(data.what, SECRET_KEY)) + "",
             // @ts-ignore
             when: GUN.state.is(data, "what"),
           };
+          console.log({ message });
 
           if (message.what) {
             setMessages(old => [...old.slice(-100), message]);
@@ -43,10 +39,10 @@ const Chat = () => {
 
   const sendMessage: FormEventHandler<HTMLFormElement> = async evt => {
     evt.preventDefault();
-    const secret = await SEA.encrypt(newMessage, key);
+    const secret = await SEA.encrypt(newMessage, SECRET_KEY);
     const message = user.get("all").set({ what: secret });
     const index = new Date().toISOString();
-    db.get("chat").get(index).put(message);
+    gun.get("chat").get(index).put(message);
     setNewMessage("");
   };
 
