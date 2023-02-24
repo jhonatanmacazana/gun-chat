@@ -1,7 +1,7 @@
-import { user } from "../lib/user";
-import { useAuthStore } from "../modules/auth/useAuthStore";
+import { user } from "@/modules/auth/user";
+import { useAuthStore } from "@/modules/auth/useAuthStore";
 
-const Header = () => {
+export const Header = () => {
   const { username } = useAuthStore();
 
   const signout = () => {
@@ -33,5 +33,3 @@ const Header = () => {
     </header>
   );
 };
-
-export default Header;

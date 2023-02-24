@@ -1,11 +1,13 @@
-import { useAuthStore } from "../modules/auth/useAuthStore";
-import { gun } from "./gun";
+import type { IGunUserInstance } from "gun/types";
 
-export const user = gun.user().recall({ sessionStorage: true });
+import { gun } from "@/lib/gun";
+
+import { useAuthStore } from "./useAuthStore";
+
+export const user: IGunUserInstance = gun.user().recall({ sessionStorage: true });
 
 user.get("alias").on(v => useAuthStore.getState().setUsername(v));
 
-// @ts-ignore
 gun.on("auth", async () => {
   const alias = (await user.get("alias")) as unknown as string;
   useAuthStore.getState().setUsername(alias);

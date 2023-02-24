@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { user } from "../lib/user";
+import { user } from "@/modules/auth/user";
 
-const Login = () => {
+export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -49,5 +49,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;

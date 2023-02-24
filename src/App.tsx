@@ -1,7 +1,7 @@
-import Chat from "./components/Chat";
-import Header from "./components/Header";
+import { Chat } from "./components/Chat";
+import { Header } from "./components/Header";
 
-const App = () => {
+export const App = () => {
   return (
     <div className="App">
       <Header />
@@ -9,5 +9,3 @@ const App = () => {
     </div>
   );
 };
-
-export default App;

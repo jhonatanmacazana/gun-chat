@@ -1,16 +1,12 @@
-import { Message } from "../lib/types";
+import formatRelative from "date-fns/formatRelative";
 
-type ChatMessageProps = {
-  message: Message;
-  sender: string;
-};
+import { Message } from "@/lib/types";
 
-const ChatMessage = ({ message, sender }: ChatMessageProps) => {
+export const ChatMessage = ({ message, sender }: { message: Message; sender: string }) => {
   const messageClass = message.who === sender ? "sent" : "received";
 
   const avatar = `https://avatars.dicebear.com/api/initials/${message.who}.svg`;
-
-  const ts = new Date(message.when!);
+  const ts = formatRelative(message.when!, new Date());
 
   return (
     <div
@@ -24,12 +20,10 @@ const ChatMessage = ({ message, sender }: ChatMessageProps) => {
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         <img src={avatar} alt="avatar" width="20px" />
-        <time style={{ marginLeft: "1rem", color: "gray" }}>{ts.toLocaleTimeString()}</time>
+        <time style={{ marginLeft: "1rem", color: "gray" }}>{ts}</time>
       </div>
 
       <p>{message.what}</p>
     </div>
   );
 };
-
-export default ChatMessage;
